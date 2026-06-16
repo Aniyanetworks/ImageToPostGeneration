@@ -621,6 +621,156 @@
     .music-zone-size { font-size: 11px; color: var(--muted); }
 
     /* ══════════════════════════════════════
+       MUSIC PICKER
+    ══════════════════════════════════════ */
+    .music-picker-wrap { margin-bottom: 28px; }
+
+    .music-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .music-tab-btn {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: 7px 18px;
+      border-radius: 99px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all .15s;
+      display: flex; align-items: center; gap: 6px;
+    }
+
+    .music-tab-btn svg { width: 13px; height: 13px; stroke: currentColor; }
+
+    .music-tab-btn:hover { border-color: var(--accent2); color: var(--text); }
+
+    .music-tab-btn.active {
+      background: linear-gradient(110deg, var(--accent), var(--accent2));
+      border-color: transparent;
+      color: #fff;
+    }
+
+    .music-panel { display: none; }
+    .music-panel.active { display: block; }
+
+    /* Preset track cards */
+    .preset-tracks {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .track-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      cursor: pointer;
+      transition: border-color .2s, background .2s;
+      position: relative;
+    }
+
+    .track-card:hover { border-color: var(--accent2); background: var(--surface2); }
+
+    .track-card.selected {
+      border-color: var(--accent);
+      background: #1a1c2b;
+    }
+
+    .track-card.selected::after {
+      content: '✓';
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 22px; height: 22px;
+      background: var(--accent);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; color: #fff;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .track-play-btn {
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #1e2040, #252845);
+      border: 1px solid var(--border);
+      color: var(--accent2);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      cursor: pointer;
+      transition: background .2s, border-color .2s;
+    }
+
+    .track-play-btn:hover { background: #2a2d50; border-color: var(--accent2); }
+    .track-play-btn.playing { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+    .track-play-btn svg { width: 14px; height: 14px; stroke: currentColor; fill: currentColor; pointer-events: none; }
+
+    .track-info { flex: 1; min-width: 0; }
+
+    .track-name {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      margin-bottom: 3px;
+    }
+
+    .track-meta { font-size: 11px; color: var(--muted); display: flex; gap: 10px; }
+
+    .track-waveform {
+      flex: 1;
+      height: 28px;
+      border-radius: 4px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      max-width: 100px;
+      opacity: 0.5;
+    }
+
+    .track-card.selected .track-waveform { opacity: 1; }
+
+    .wavebar {
+      width: 3px;
+      border-radius: 2px;
+      background: var(--accent2);
+      flex-shrink: 0;
+    }
+
+    .track-card.selected .track-play-btn { border-color: var(--accent); }
+
+    /* Selected track summary */
+    .selected-track-summary {
+      display: none;
+      align-items: center;
+      gap: 10px;
+      margin-top: 10px;
+      padding: 10px 14px;
+      background: #0e1220;
+      border: 1px solid #2a2d4a;
+      border-radius: 10px;
+      font-size: 13px;
+    }
+
+    .selected-track-summary.visible { display: flex; }
+    .selected-track-summary svg { width: 14px; height: 14px; stroke: var(--accent2); flex-shrink: 0; }
+    .selected-track-summary span { color: var(--accent2); font-weight: 500; }
+    .selected-track-summary .clear-sel { margin-left: auto; color: var(--muted); cursor: pointer; font-size: 11px; border: none; background: none; font-family: inherit; cursor: pointer; }
+    .selected-track-summary .clear-sel:hover { color: var(--error); }
+
+    /* ══════════════════════════════════════
        FOOTER
     ══════════════════════════════════════ */
     .pg-footer {
@@ -707,25 +857,49 @@
       </div>
     </div>
 
-    <!-- Music zone -->
-    <div class="music-zone-wrap">
-      <div class="section-title">Background Music <em>(optional, single track)</em></div>
-      <div class="music-zone" id="p1-music-zone">
-        <input type="file" id="p1-music-input" accept="audio/*" />
-        <div class="music-zone-icon" id="p1-music-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>
-          </svg>
+    <!-- Music Picker -->
+    <div class="music-picker-wrap">
+      <div class="section-title">Background Music <em>(optional)</em></div>
+      <div class="music-tabs">
+        <button class="music-tab-btn active" data-tab="p1-presets" onclick="switchMusicTab('p1','presets',this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+          Choose a Track
+        </button>
+        <button class="music-tab-btn" data-tab="p1-upload" onclick="switchMusicTab('p1','upload',this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg>
+          Upload Your Own
+        </button>
+      </div>
+
+      <!-- Preset tracks panel -->
+      <div class="music-panel active" id="p1-panel-presets">
+        <div class="preset-tracks" id="p1-preset-tracks"></div>
+        <div class="selected-track-summary" id="p1-track-summary">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+          <span id="p1-track-summary-name">—</span>
+          <button class="clear-sel" id="p1-clear-track">✕ Remove</button>
         </div>
-        <div class="music-zone-body">
-          <div class="music-zone-label" id="p1-music-label">Drop audio or click to browse</div>
-          <div class="music-zone-hint" id="p1-music-hint">MP3, WAV, AAC, FLAC, OGG, M4A</div>
-          <div class="music-zone-file" id="p1-music-file">
-            <div class="music-zone-name" id="p1-music-name"></div>
-            <div class="music-zone-size" id="p1-music-size"></div>
+      </div>
+
+      <!-- Upload panel -->
+      <div class="music-panel" id="p1-panel-upload">
+        <div class="music-zone" id="p1-music-zone">
+          <input type="file" id="p1-music-input" accept="audio/*" />
+          <div class="music-zone-icon" id="p1-music-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>
+            </svg>
           </div>
+          <div class="music-zone-body">
+            <div class="music-zone-label" id="p1-music-label">Drop audio or click to browse</div>
+            <div class="music-zone-hint" id="p1-music-hint">MP3, WAV, AAC, FLAC, OGG, M4A</div>
+            <div class="music-zone-file" id="p1-music-file">
+              <div class="music-zone-name" id="p1-music-name"></div>
+              <div class="music-zone-size" id="p1-music-size"></div>
+            </div>
+          </div>
+          <button class="btn-sm" id="p1-music-remove" style="display:none; flex-shrink:0;">Remove</button>
         </div>
-        <button class="btn-sm" id="p1-music-remove" style="display:none; flex-shrink:0;">Remove</button>
       </div>
     </div>
 
@@ -797,25 +971,49 @@
       </div>
     </div>
 
-    <!-- Music zone -->
-    <div class="music-zone-wrap">
-      <div class="section-title">Background Music <em>(optional, single track)</em></div>
-      <div class="music-zone" id="ba-music-zone">
-        <input type="file" id="ba-music-input" accept="audio/*" />
-        <div class="music-zone-icon" id="ba-music-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>
-          </svg>
+    <!-- Music Picker -->
+    <div class="music-picker-wrap">
+      <div class="section-title">Background Music <em>(optional)</em></div>
+      <div class="music-tabs">
+        <button class="music-tab-btn active" data-tab="ba-presets" onclick="switchMusicTab('ba','presets',this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+          Choose a Track
+        </button>
+        <button class="music-tab-btn" data-tab="ba-upload" onclick="switchMusicTab('ba','upload',this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg>
+          Upload Your Own
+        </button>
+      </div>
+
+      <!-- Preset tracks panel -->
+      <div class="music-panel active" id="ba-panel-presets">
+        <div class="preset-tracks" id="ba-preset-tracks"></div>
+        <div class="selected-track-summary" id="ba-track-summary">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+          <span id="ba-track-summary-name">—</span>
+          <button class="clear-sel" id="ba-clear-track">✕ Remove</button>
         </div>
-        <div class="music-zone-body">
-          <div class="music-zone-label" id="ba-music-label">Drop audio or click to browse</div>
-          <div class="music-zone-hint" id="ba-music-hint">MP3, WAV, AAC, FLAC, OGG, M4A</div>
-          <div class="music-zone-file" id="ba-music-file">
-            <div class="music-zone-name" id="ba-music-name"></div>
-            <div class="music-zone-size" id="ba-music-size"></div>
+      </div>
+
+      <!-- Upload panel -->
+      <div class="music-panel" id="ba-panel-upload">
+        <div class="music-zone" id="ba-music-zone">
+          <input type="file" id="ba-music-input" accept="audio/*" />
+          <div class="music-zone-icon" id="ba-music-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>
+            </svg>
           </div>
+          <div class="music-zone-body">
+            <div class="music-zone-label" id="ba-music-label">Drop audio or click to browse</div>
+            <div class="music-zone-hint" id="ba-music-hint">MP3, WAV, AAC, FLAC, OGG, M4A</div>
+            <div class="music-zone-file" id="ba-music-file">
+              <div class="music-zone-name" id="ba-music-name"></div>
+              <div class="music-zone-size" id="ba-music-size"></div>
+            </div>
+          </div>
+          <button class="btn-sm" id="ba-music-remove" style="display:none; flex-shrink:0;">Remove</button>
         </div>
-        <button class="btn-sm" id="ba-music-remove" style="display:none; flex-shrink:0;">Remove</button>
       </div>
     </div>
 
@@ -859,6 +1057,271 @@
 </div>
 
 <script>
+/* ══════════════════════════════════════
+   MUSIC PICKER — PRESET TRACKS
+══════════════════════════════════════ */
+
+const PRESET_TRACKS = [
+  {
+    id: 'track1',
+    name: 'Funk & Breakbeat',
+    artist: 'Alexguz',
+    genre: 'Funk / Breakbeat',
+    file: 'alexguz-funk-amp-breakbeat-541097.mp3'
+  },
+  {
+    id: 'track2',
+    name: 'Escape Your Love',
+    artist: 'Fassounds',
+    genre: 'Upbeat Fashion Pop Dance',
+    file: 'fassounds-escape-your-love-upbeat-fashion-pop-dance-412230.mp3'
+  },
+  {
+    id: 'track3',
+    name: 'Water',
+    artist: 'Kontraa',
+    genre: 'Afro Pop',
+    file: 'kontraa-water-afro-pop-music-445661.mp3'
+  },
+  {
+    id: 'track4',
+    name: 'Carnaval',
+    artist: 'Alec Koff',
+    genre: 'World / Festive',
+    file: 'alec_koff-carnaval-484622.mp3'
+  },
+  {
+    id: 'track5',
+    name: 'Blues Ballad',
+    artist: 'Alec Koff',
+    genre: 'Blues / Ballad',
+    file: 'alec_koff-blues-ballad-487408.mp3'
+  },
+  {
+    id: 'track6',
+    name: 'Comedy Cartoon',
+    artist: 'Starostin',
+    genre: 'Comedy / Cartoon',
+    file: 'starostin-comedy-cartoon-funny-background-music-492540.mp3'
+  },
+  {
+    id: 'track7',
+    name: 'Powerful Percussion',
+    artist: 'Energysound',
+    genre: 'Percussion / Action',
+    file: 'energysound-powerful-percussion-513717.mp3'
+  },
+  {
+    id: 'track8',
+    name: 'Stomp Action Music',
+    artist: 'Energysound',
+    genre: 'Action / Stomp',
+    file: 'energysound-stomp-action-music-513718.mp3'
+  },
+  {
+    id: 'track9',
+    name: 'Stomp Drum Percussion',
+    artist: 'Energysound',
+    genre: 'Percussion / Stomp',
+    file: 'energysound-stomp-drum-percussion-513744.mp3'
+  },
+  {
+    id: 'track10',
+    name: 'Joyful Rhythm Walk',
+    artist: 'Lightbeatsmusic',
+    genre: 'Funk / Upbeat',
+    file: 'lightbeatsmusic-joyful-rhythm-walk-funk-513936.mp3'
+  },
+  {
+    id: 'track11',
+    name: 'Dance Playful Night',
+    artist: 'Alexzavesa',
+    genre: 'Dance / Playful',
+    file: 'alexzavesa-dance-playful-night-510786.mp3'
+  },
+  {
+    id: 'track12',
+    name: 'Medicine',
+    artist: 'Gvidon',
+    genre: 'Ambient / Chill',
+    file: 'gvidon-gvidon-medicine-364031.mp3'
+  },
+  {
+    id: 'track13',
+    name: 'Acoustic Spring',
+    artist: 'Ikoliks AJ',
+    genre: 'Acoustic / Uplifting',
+    file: 'ikoliks_aj-acoustic-spring-mothers-day-music-320427.mp3'
+  }
+];
+
+// Shared audio element
+let currentAudio = null;
+let currentPlayBtn = null;
+
+// Track selections per page
+const presetSelection = { p1: null, ba: null };
+
+function switchMusicTab(page, tab, btn) {
+  const wrap = btn.closest('.music-picker-wrap');
+  wrap.querySelectorAll('.music-tab-btn').forEach(b => b.classList.remove('active'));
+  wrap.querySelectorAll('.music-panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(`${page}-panel-${tab}`).classList.add('active');
+}
+
+function randomWave() {
+  const bars = [];
+  const heights = [6,10,16,22,18,14,8,12,20,24,16,10,8,18,14,22,12,6,10,20];
+  for (let i = 0; i < 20; i++) {
+    bars.push(`<div class="wavebar" style="height:${heights[i]}px"></div>`);
+  }
+  return bars.join('');
+}
+
+function buildPresetTracks(page) {
+  const container = document.getElementById(`${page}-preset-tracks`);
+  if (!container) return;
+
+  PRESET_TRACKS.forEach(track => {
+    const card = document.createElement('div');
+    card.className = 'track-card';
+    card.dataset.id = track.id;
+
+    card.innerHTML = `
+      <button class="track-play-btn" title="Preview">
+        <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="5 3 19 12 5 21 5 3"/>
+        </svg>
+      </button>
+      <div class="track-info">
+        <div class="track-name">${track.name}</div>
+        <div class="track-meta">
+          <span>${track.artist}</span>
+          <span style="color:#454860">·</span>
+          <span>${track.genre}</span>
+        </div>
+      </div>
+      <div class="track-waveform">${randomWave()}</div>
+    `;
+
+    const playBtn = card.querySelector('.track-play-btn');
+
+    // Play/pause preview
+    playBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      const src = track.file;
+
+      if (currentAudio && currentPlayBtn === playBtn) {
+        // Toggle same track
+        if (currentAudio.paused) {
+          currentAudio.play();
+          playBtn.classList.add('playing');
+          setPlayIcon(playBtn, 'pause');
+        } else {
+          currentAudio.pause();
+          playBtn.classList.remove('playing');
+          setPlayIcon(playBtn, 'play');
+        }
+        return;
+      }
+
+      // Stop previous
+      stopCurrentAudio();
+
+      currentAudio = new Audio(src);
+      currentAudio.volume = 0.7;
+      currentPlayBtn = playBtn;
+      currentAudio.play().catch(() => {});
+      playBtn.classList.add('playing');
+      setPlayIcon(playBtn, 'pause');
+
+      currentAudio.addEventListener('ended', () => {
+        playBtn.classList.remove('playing');
+        setPlayIcon(playBtn, 'play');
+        currentAudio = null;
+        currentPlayBtn = null;
+      });
+    });
+
+    // Select track by clicking the card (not the play btn)
+    card.addEventListener('click', e => {
+      if (e.target.closest('.track-play-btn')) return;
+      selectPresetTrack(page, track, card);
+    });
+
+    container.appendChild(card);
+  });
+
+  // Clear button
+  const clearBtn = document.getElementById(`${page}-clear-track`);
+  if (clearBtn) {
+    clearBtn.addEventListener('click', () => {
+      presetSelection[page] = null;
+      container.querySelectorAll('.track-card').forEach(c => c.classList.remove('selected'));
+      document.getElementById(`${page}-track-summary`).classList.remove('visible');
+      notifyMusicChange(page);
+    });
+  }
+}
+
+function selectPresetTrack(page, track, card) {
+  const container = document.getElementById(`${page}-preset-tracks`);
+  container.querySelectorAll('.track-card').forEach(c => c.classList.remove('selected'));
+  card.classList.add('selected');
+  presetSelection[page] = track;
+
+  const summary = document.getElementById(`${page}-track-summary`);
+  const nameEl  = document.getElementById(`${page}-track-summary-name`);
+  nameEl.textContent = `${track.name} — ${track.artist}`;
+  summary.classList.add('visible');
+
+  notifyMusicChange(page);
+}
+
+function stopCurrentAudio() {
+  if (currentAudio) {
+    currentAudio.pause();
+    currentAudio = null;
+  }
+  if (currentPlayBtn) {
+    currentPlayBtn.classList.remove('playing');
+    setPlayIcon(currentPlayBtn, 'play');
+    currentPlayBtn = null;
+  }
+}
+
+function setPlayIcon(btn, state) {
+  if (state === 'pause') {
+    btn.innerHTML = `<svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="currentColor">
+      <rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>
+    </svg>`;
+  } else {
+    btn.innerHTML = `<svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="currentColor">
+      <polygon points="5 3 19 12 5 21 5 3"/>
+    </svg>`;
+  }
+}
+
+// Called when preset selection changes — triggers page-specific music onChange
+const musicChangeCallbacks = {};
+function notifyMusicChange(page) {
+  if (musicChangeCallbacks[page]) musicChangeCallbacks[page]();
+}
+
+// Returns selected preset track as a File-like object for FormData, or null
+async function getPresetFile(page) {
+  const track = presetSelection[page];
+  if (!track) return null;
+  try {
+    const res = await fetch(track.file);
+    const blob = await res.blob();
+    return new File([blob], track.file, { type: 'audio/mpeg' });
+  } catch {
+    return null;
+  }
+}
+
 /* ══════════════════════════════════════
    NAVBAR
 ══════════════════════════════════════ */
@@ -1046,7 +1509,9 @@ function makeMusicZone({ zone, input, icon, label, hint, fileDiv, nameEl, sizeEl
     onChange:  () => updateUI()
   });
 
-  makeDrop(imagesZone, imagesInput, addFiles);
+  // Build preset track cards and register change callback
+  buildPresetTracks('p1');
+  musicChangeCallbacks['p1'] = () => updateUI();
 
   function addFiles(files) {
     files.forEach(file => {
@@ -1109,7 +1574,13 @@ function makeMusicZone({ zone, input, icon, label, hint, fileDiv, nameEl, sizeEl
       fd.append('images', file, file.name);
     });
     if (logo.getFile()) fd.append('logo', logo.getFile(), logo.getFile().name);
-    if (music.getFile()) fd.append('music', music.getFile(), music.getFile().name);
+    const uploadedMusic = music.getFile();
+    if (uploadedMusic) {
+      fd.append('music', uploadedMusic, uploadedMusic.name);
+    } else {
+      const presetFile = await getPresetFile('p1');
+      if (presetFile) fd.append('music', presetFile, presetFile.name);
+    }
 
     try {
       const res = await fetch(WEBHOOK, { method: 'POST', body: fd });
@@ -1184,6 +1655,10 @@ function makeMusicZone({ zone, input, icon, label, hint, fileDiv, nameEl, sizeEl
     removeBtn: document.getElementById('ba-music-remove'),
     onChange:  () => updateUI()
   });
+
+  // Build preset track cards and register change callback
+  buildPresetTracks('ba');
+  musicChangeCallbacks['ba'] = () => updateUI();
 
   let pairs = []; // [{ id, beforeFile, afterFile }]
 
@@ -1296,7 +1771,7 @@ function makeMusicZone({ zone, input, icon, label, hint, fileDiv, nameEl, sizeEl
     const parts = [];
     if (total) parts.push(`${complete}/${total} pairs complete`);
     if (logo.getFile()) parts.push('logo ready');
-    if (music.getFile()) parts.push('music ready');
+    if (music.getFile() || presetSelection['ba']) parts.push('music ready');
     fileCount.textContent = parts.join(' · ');
     btnUpload.disabled = complete === 0;
   }
@@ -1323,7 +1798,13 @@ function makeMusicZone({ zone, input, icon, label, hint, fileDiv, nameEl, sizeEl
     });
 
     if (logo.getFile()) fd.append('logo', logo.getFile(), logo.getFile().name);
-    if (music.getFile()) fd.append('music', music.getFile(), music.getFile().name);
+    const uploadedMusic = music.getFile();
+    if (uploadedMusic) {
+      fd.append('music', uploadedMusic, uploadedMusic.name);
+    } else {
+      const presetFile = await getPresetFile('ba');
+      if (presetFile) fd.append('music', presetFile, presetFile.name);
+    }
 
     // Also send pair count so n8n knows how many to expect
     fd.append('pair_count', String(completePairs.length));
