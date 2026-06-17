@@ -10,19 +10,64 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:      #0d0e12;
-      --surface: #14161d;
-      --surface2:#1a1c28;
-      --border:  #23263a;
-      --accent:  #6c63ff;
-      --accent2: #a78bfa;
-      --text:    #e8e9f0;
-      --muted:   #6b6f88;
+      --bg:      #0a0a0a;
+      --surface: #141414;
+      --surface2:#1c1c1c;
+      --border:  #2a2a2a;
+      --accent:  #d61f1f;
+      --accent2: #ff3b3b;
+      --text:    #f5f5f5;
+      --muted:   #8a8a8a;
       --success: #34d399;
       --error:   #f87171;
       --warn:    #fbbf24;
       --radius:  14px;
+      --nav-bg:  rgba(10,10,10,0.88);
+      --overlay: rgba(10,10,10,.55);
+      --icon-grad: linear-gradient(135deg, #1a1a1a, #232323);
+      --hover-tint: #1a1c2b;
+      --panel-tint: #0e1220;
+      --panel-border: #2a2d4a;
+      --success-bg: #0e1f1a;
+      --success-border: #2a6b55;
+      --error-bg: #1f0e0e;
+      --error-border: #6b2a2a;
+      --muted2: #3a3c5a;
+      --muted3: #454860;
+      --play-hover: #2a2d50;
     }
+
+    html[data-theme="light"] {
+      --bg:      #fafafa;
+      --surface: #ffffff;
+      --surface2:#f1f1f1;
+      --border:  #e2e2e2;
+      --accent:  #d61f1f;
+      --accent2: #b3151a;
+      --text:    #161616;
+      --muted:   #6b6b6b;
+      --success: #16a34a;
+      --error:   #dc2626;
+      --warn:    #d97706;
+      --nav-bg:  rgba(255,255,255,0.88);
+      --overlay: rgba(255,255,255,.7);
+      --icon-grad: linear-gradient(135deg, #f0f0f0, #e4e4e4);
+      --hover-tint: #fdecec;
+      --panel-tint: #fdf2f2;
+      --panel-border: #f3c9c9;
+      --success-bg: #eafaf1;
+      --success-border: #a7e3c5;
+      --error-bg: #fdecec;
+      --error-border: #f3b8b8;
+      --muted2: #d8d8d8;
+      --muted3: #b5b5b5;
+      --play-hover: #f0d8d8;
+    }
+
+    html { transition: background .2s; }
+    body, nav, .surface, * { }
+
+    *, *::before, *::after { transition: background-color .2s, border-color .2s, color .2s; }
 
     html, body {
       min-height: 100vh;
@@ -40,7 +85,7 @@
       position: sticky;
       top: 0;
       z-index: 100;
-      background: rgba(13,14,18,0.88);
+      background: var(--nav-bg);
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
       border-bottom: 1px solid var(--border);
@@ -57,15 +102,15 @@
     }
 
     .nav-brand {
-      font-family: 'Syne', sans-serif;
-      font-weight: 800;
-      font-size: 1.05rem;
-      background: linear-gradient(110deg, var(--accent), var(--accent2));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      display: flex;
+      align-items: center;
       margin-right: auto;
-      letter-spacing: -0.01em;
+    }
+
+    .nav-brand img {
+      height: 28px;
+      width: auto;
+      display: block;
     }
 
     .nav-tabs {
@@ -97,6 +142,32 @@
       color: #fff;
       background: linear-gradient(110deg, var(--accent), var(--accent2));
     }
+
+    .theme-toggle {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--icon-grad);
+      border: 1px solid var(--border);
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      margin-left: 14px;
+      flex-shrink: 0;
+      transition: border-color .15s, background .15s;
+    }
+
+    .theme-toggle:hover { border-color: var(--accent2); }
+
+    .theme-toggle svg { width: 17px; height: 17px; stroke: currentColor; }
+
+    .theme-toggle .icon-sun { display: none; }
+    .theme-toggle .icon-moon { display: block; }
+
+    html[data-theme="light"] .theme-toggle .icon-sun { display: block; }
+    html[data-theme="light"] .theme-toggle .icon-moon { display: none; }
 
     /* ══════════════════════════════════════
        PAGES
@@ -184,7 +255,7 @@
 
     .drop-zone:hover, .drop-zone.dragover {
       border-color: var(--accent);
-      background: #1a1c2b;
+      background: var(--hover-tint);
     }
 
     .drop-zone input[type="file"] {
@@ -198,7 +269,7 @@
 
     .drop-icon {
       width: 42px; height: 42px;
-      background: linear-gradient(135deg, #1e2040, #252845);
+      background: var(--icon-grad);
       border-radius: 50%;
       display: flex;
       align-items: center;
@@ -228,7 +299,7 @@
       width: 80px; height: 80px;
       border-radius: 10px;
       object-fit: contain;
-      background: #1a1c2b;
+      background: var(--hover-tint);
       border: 1px solid var(--border);
       padding: 4px;
     }
@@ -320,12 +391,12 @@
 
     .pair-drop:hover, .pair-drop.dragover {
       border-color: var(--accent);
-      background: #1a1c2b;
+      background: var(--hover-tint);
     }
 
     .pair-drop.has-file {
       padding: 10px;
-      border-color: #3a3c5a;
+      border-color: var(--muted2);
     }
 
     .pair-drop input[type="file"] {
@@ -369,7 +440,7 @@
 
     .pair-placeholder-hint {
       font-size: 11px;
-      color: #454860;
+      color: var(--muted3);
     }
 
     /* ── Add Pair Button ── */
@@ -395,7 +466,7 @@
     .btn-add-pair:hover {
       border-color: var(--accent);
       color: var(--accent2);
-      background: #1a1c2b;
+      background: var(--hover-tint);
     }
 
     .btn-add-pair svg { width: 18px; height: 18px; stroke: currentColor; }
@@ -443,9 +514,9 @@
       gap: 10px;
     }
 
-    .status-bar.info    { background: #1a1c2b; border: 1px solid var(--accent);  color: var(--accent2); display: flex; }
-    .status-bar.success { background: #0e1f1a; border: 1px solid #2a6b55; color: var(--success); display: flex; }
-    .status-bar.error   { background: #1f0e0e; border: 1px solid #6b2a2a; color: var(--error);   display: flex; }
+    .status-bar.info    { background: var(--hover-tint); border: 1px solid var(--accent);  color: var(--accent2); display: flex; }
+    .status-bar.success { background: var(--success-bg); border: 1px solid var(--success-border); color: var(--success); display: flex; }
+    .status-bar.error   { background: var(--error-bg); border: 1px solid var(--error-border); color: var(--error);   display: flex; }
 
     .spinner {
       width: 15px; height: 15px;
@@ -550,9 +621,9 @@
       transition: background .2s;
     }
 
-    .preview-item.uploading .overlay { background: rgba(13,14,18,.55); color: var(--accent2); }
-    .preview-item.success   .overlay { background: rgba(13,14,18,.55); color: var(--success); }
-    .preview-item.error     .overlay { background: rgba(13,14,18,.55); color: var(--error); }
+    .preview-item.uploading .overlay { background: var(--overlay); color: var(--accent2); }
+    .preview-item.success   .overlay { background: var(--overlay); color: var(--success); }
+    .preview-item.error     .overlay { background: var(--overlay); color: var(--error); }
 
     /* ══════════════════════════════════════
        MUSIC ZONE (shared)
@@ -575,11 +646,11 @@
 
     .music-zone:hover, .music-zone.dragover {
       border-color: var(--accent);
-      background: #1a1c2b;
+      background: var(--hover-tint);
     }
 
     .music-zone.has-file {
-      border-color: #3a3c5a;
+      border-color: var(--muted2);
       cursor: default;
     }
 
@@ -596,7 +667,7 @@
 
     .music-zone-icon {
       width: 38px; height: 38px;
-      background: linear-gradient(135deg, #1e2040, #252845);
+      background: var(--icon-grad);
       border-radius: 10px;
       display: flex; align-items: center; justify-content: center;
       flex-shrink: 0;
@@ -665,6 +736,37 @@
       gap: 10px;
     }
 
+    .track-card.hidden-track { display: none; }
+
+    .show-more-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      width: 100%;
+      margin-top: 10px;
+      padding: 9px 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 99px;
+      color: var(--accent2);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: border-color .15s, background .15s;
+    }
+
+    .show-more-btn:hover { border-color: var(--accent2); background: var(--surface2); }
+
+    .show-more-btn svg {
+      width: 14px; height: 14px;
+      stroke: currentColor;
+      transition: transform .2s;
+    }
+
+    .show-more-btn.expanded svg { transform: rotate(180deg); }
+
     .track-card {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -682,7 +784,7 @@
 
     .track-card.selected {
       border-color: var(--accent);
-      background: #1a1c2b;
+      background: var(--hover-tint);
     }
 
     .track-card.selected::after {
@@ -702,7 +804,7 @@
     .track-play-btn {
       width: 38px; height: 38px;
       border-radius: 50%;
-      background: linear-gradient(135deg, #1e2040, #252845);
+      background: var(--icon-grad);
       border: 1px solid var(--border);
       color: var(--accent2);
       display: flex; align-items: center; justify-content: center;
@@ -711,7 +813,7 @@
       transition: background .2s, border-color .2s;
     }
 
-    .track-play-btn:hover { background: #2a2d50; border-color: var(--accent2); }
+    .track-play-btn:hover { background: var(--play-hover); border-color: var(--accent2); }
     .track-play-btn.playing { background: var(--accent); border-color: var(--accent); color: #fff; }
 
     .track-play-btn svg { width: 14px; height: 14px; stroke: currentColor; fill: currentColor; pointer-events: none; }
@@ -758,8 +860,8 @@
       gap: 10px;
       margin-top: 10px;
       padding: 10px 14px;
-      background: #0e1220;
-      border: 1px solid #2a2d4a;
+      background: var(--panel-tint);
+      border: 1px solid var(--panel-border);
       border-radius: 10px;
       font-size: 13px;
     }
@@ -789,7 +891,7 @@
 ══════════════════════════════════════ -->
 <nav>
   <div class="nav-inner">
-    <div class="nav-brand">⚡ WorkflowStudio</div>
+    <div class="nav-brand"><img src="Zeal-Transparent.webp" alt="Zeal Media Solutions" /></div>
     <div class="nav-tabs">
       <button class="nav-tab active" data-page="page-uploader" onclick="switchPage('page-uploader', this)">
         <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -805,6 +907,15 @@
         <span>Before &amp; After Video</span>
       </button>
     </div>
+    <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme" title="Toggle light / dark mode">
+      <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="4"/>
+        <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+      </svg>
+      <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+      </svg>
+    </button>
   </div>
 </nav>
 
@@ -899,6 +1010,10 @@
       <!-- Preset tracks panel -->
       <div class="music-panel active" id="p1-panel-presets">
         <div class="preset-tracks" id="p1-preset-tracks"></div>
+        <button class="show-more-btn" id="p1-show-more">
+          <span class="label">Show More</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
         <div class="selected-track-summary" id="p1-track-summary">
           <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
           <span id="p1-track-summary-name">—</span>
@@ -931,10 +1046,6 @@
     <div class="status-bar" id="p1-status">
       <div class="spinner" id="p1-spinner" style="display:none"></div>
       <span id="p1-status-text"></span>
-    </div>
-
-    <div class="pg-footer">
-      Sending to: <code>https://n8n.srv1300653.hstgr.cloud/webhook/upload-multipule-image</code>
     </div>
   </div>
 </div>
@@ -1000,6 +1111,10 @@
       <!-- Preset tracks panel -->
       <div class="music-panel active" id="ba-panel-presets">
         <div class="preset-tracks" id="ba-preset-tracks"></div>
+        <button class="show-more-btn" id="ba-show-more">
+          <span class="label">Show More</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
         <div class="selected-track-summary" id="ba-track-summary">
           <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
           <span id="ba-track-summary-name">—</span>
@@ -1048,10 +1163,6 @@
     <div class="status-bar" id="ba-status">
       <div class="spinner" id="ba-spinner" style="display:none"></div>
       <span id="ba-status-text"></span>
-    </div>
-
-    <div class="pg-footer">
-      Sending to: <code>https://n8n.srv1300653.hstgr.cloud/webhook/upload-multipule-image</code>
     </div>
   </div>
 </div>
@@ -1183,9 +1294,12 @@ function buildPresetTracks(page) {
   const container = document.getElementById(`${page}-preset-tracks`);
   if (!container) return;
 
-  PRESET_TRACKS.forEach(track => {
+  const VISIBLE_COUNT = 4;
+
+  PRESET_TRACKS.forEach((track, index) => {
     const card = document.createElement('div');
     card.className = 'track-card';
+    if (index >= VISIBLE_COUNT) card.classList.add('hidden-track');
     card.dataset.id = track.id;
 
     card.innerHTML = `
@@ -1198,7 +1312,7 @@ function buildPresetTracks(page) {
         <div class="track-name">${track.name}</div>
         <div class="track-meta">
           <span>${track.artist}</span>
-          <span style="color:#454860">·</span>
+          <span style="color:var(--muted3)">·</span>
           <span>${track.genre}</span>
         </div>
       </div>
@@ -1262,6 +1376,22 @@ function buildPresetTracks(page) {
       document.getElementById(`${page}-track-summary`).classList.remove('visible');
       notifyMusicChange(page);
     });
+  }
+
+  // Show more / show less toggle
+  const showMoreBtn = document.getElementById(`${page}-show-more`);
+  if (showMoreBtn) {
+    if (PRESET_TRACKS.length <= VISIBLE_COUNT) {
+      showMoreBtn.style.display = 'none';
+    } else {
+      showMoreBtn.addEventListener('click', () => {
+        const expanded = showMoreBtn.classList.toggle('expanded');
+        container.querySelectorAll('.hidden-track').forEach(c => {
+          c.style.display = expanded ? 'flex' : 'none';
+        });
+        showMoreBtn.querySelector('.label').textContent = expanded ? 'Show Less' : 'Show More';
+      });
+    }
   }
 }
 
@@ -1331,6 +1461,27 @@ function switchPage(pageId, btn) {
   document.getElementById(pageId).classList.add('active');
   btn.classList.add('active');
 }
+
+/* ══════════════════════════════════════
+   THEME TOGGLE (dark / light)
+══════════════════════════════════════ */
+(function () {
+  const root = document.documentElement;
+  const toggleBtn = document.getElementById('theme-toggle');
+
+  let saved = null;
+  try { saved = localStorage.getItem('zeal-theme'); } catch (e) {}
+
+  const prefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+  const initial = saved || (prefersLight ? 'light' : 'dark');
+  root.setAttribute('data-theme', initial);
+
+  toggleBtn.addEventListener('click', () => {
+    const next = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+    root.setAttribute('data-theme', next);
+    try { localStorage.setItem('zeal-theme', next); } catch (e) {}
+  });
+})();
 
 /* ══════════════════════════════════════
    HELPERS
