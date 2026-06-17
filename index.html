@@ -857,6 +857,31 @@
       </div>
     </div>
 
+    <!-- Progress -->
+    <div class="progress-wrap" id="p1-progress-wrap">
+      <div class="progress-bar" id="p1-progress-bar"></div>
+    </div>
+
+    <!-- Preview grid -->
+    <div id="p1-preview-section">
+      <div class="preview-header">
+        <h2 id="p1-preview-title">0 images selected</h2>
+        <button class="btn-sm" id="p1-btn-clear">Clear all</button>
+      </div>
+      <div class="preview-grid" id="p1-preview-grid"></div>
+
+      <div class="upload-row">
+        <button class="btn-upload" id="p1-btn-upload" disabled>
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/>
+            <path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/>
+          </svg>
+          Send to Workflow
+        </button>
+        <span class="file-count" id="p1-file-count"></span>
+      </div>
+    </div>
+
     <!-- Music Picker -->
     <div class="music-picker-wrap">
       <div class="section-title">Background Music <em>(optional)</em></div>
@@ -903,31 +928,6 @@
       </div>
     </div>
 
-    <!-- Progress -->
-    <div class="progress-wrap" id="p1-progress-wrap">
-      <div class="progress-bar" id="p1-progress-bar"></div>
-    </div>
-
-    <!-- Preview grid -->
-    <div id="p1-preview-section">
-      <div class="preview-header">
-        <h2 id="p1-preview-title">0 images selected</h2>
-        <button class="btn-sm" id="p1-btn-clear">Clear all</button>
-      </div>
-      <div class="preview-grid" id="p1-preview-grid"></div>
-
-      <div class="upload-row">
-        <button class="btn-upload" id="p1-btn-upload" disabled>
-          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/>
-            <path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/>
-          </svg>
-          Send to Workflow
-        </button>
-        <span class="file-count" id="p1-file-count"></span>
-      </div>
-    </div>
-
     <div class="status-bar" id="p1-status">
       <div class="spinner" id="p1-spinner" style="display:none"></div>
       <span id="p1-status-text"></span>
@@ -970,6 +970,18 @@
         <p class="drop-hint" id="ba-logo-hint">PNG, JPG, SVG, WEBP</p>
       </div>
     </div>
+
+    <!-- Pairs list -->
+    <div class="section-title" style="margin-bottom:14px;">Before &amp; After Pairs <em>(add as many as you need)</em></div>
+    <div class="pairs-list" id="ba-pairs-list"></div>
+
+    <!-- Add pair button -->
+    <button class="btn-add-pair" id="ba-add-pair">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/>
+      </svg>
+      Add Another Pair
+    </button>
 
     <!-- Music Picker -->
     <div class="music-picker-wrap">
@@ -1016,18 +1028,6 @@
         </div>
       </div>
     </div>
-
-    <!-- Pairs list -->
-    <div class="section-title" style="margin-bottom:14px;">Before &amp; After Pairs <em>(add as many as you need)</em></div>
-    <div class="pairs-list" id="ba-pairs-list"></div>
-
-    <!-- Add pair button -->
-    <button class="btn-add-pair" id="ba-add-pair">
-      <svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/>
-      </svg>
-      Add Another Pair
-    </button>
 
     <!-- Progress -->
     <div class="progress-wrap" id="ba-progress-wrap">
@@ -1513,6 +1513,8 @@ function makeMusicZone({ zone, input, icon, label, hint, fileDiv, nameEl, sizeEl
   buildPresetTracks('p1');
   musicChangeCallbacks['p1'] = () => updateUI();
 
+  makeDrop(imagesZone, imagesInput, addFiles);
+
   function addFiles(files) {
     files.forEach(file => {
       const id = Math.random().toString(36).slice(2);
@@ -1555,13 +1557,14 @@ function makeMusicZone({ zone, input, icon, label, hint, fileDiv, nameEl, sizeEl
     const parts = [];
     if (n) parts.push(`${n} image${n > 1 ? 's' : ''}`);
     if (logo.getFile()) parts.push('logo');
-    if (music.getFile()) parts.push('music');
-    fileCount.textContent = parts.length ? parts.join(' + ') + ' ready' : '';
-    btnUpload.disabled = n === 0;
+    else parts.push('⚠ logo required');
+    if (music.getFile() || presetSelection['p1']) parts.push('music');
+    fileCount.textContent = parts.length ? parts.join(' + ') : '';
+    btnUpload.disabled = n === 0 || !logo.getFile();
   }
 
   btnUpload.addEventListener('click', async () => {
-    if (!imageFiles.length) return;
+    if (!imageFiles.length || !logo.getFile()) return;
     btnUpload.disabled = true;
     btnClear.disabled = true;
     showStatus(statusBar, spinner, statusText, 'info', 'Uploading…', true);
@@ -1771,9 +1774,10 @@ function makeMusicZone({ zone, input, icon, label, hint, fileDiv, nameEl, sizeEl
     const parts = [];
     if (total) parts.push(`${complete}/${total} pairs complete`);
     if (logo.getFile()) parts.push('logo ready');
+    else parts.push('⚠ logo required');
     if (music.getFile() || presetSelection['ba']) parts.push('music ready');
     fileCount.textContent = parts.join(' · ');
-    btnUpload.disabled = complete === 0;
+    btnUpload.disabled = complete === 0 || !logo.getFile();
   }
 
   addPairBtn.addEventListener('click', createPair);
@@ -1783,7 +1787,7 @@ function makeMusicZone({ zone, input, icon, label, hint, fileDiv, nameEl, sizeEl
 
   btnUpload.addEventListener('click', async () => {
     const completePairs = pairs.filter(p => p.beforeFile && p.afterFile);
-    if (!completePairs.length) return;
+    if (!completePairs.length || !logo.getFile()) return;
 
     btnUpload.disabled = true;
     showStatus(statusBar, spinner, statusText, 'info', 'Sending to workflow…', true);
